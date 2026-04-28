@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>რეგისტრაცია</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <form action="/auth/register" method="post">
+        <h2>რეგისტრაცია</h2>
+        <div class="form-group">
+            <label>ელ. ფოსტა</label>
+            <input type="email" name="email" value="{{ email }}" required>
+        </div>
+        <div class="form-group">
+            <label>პაროლი</label>
+            <input type="password" name="password" minlength="6" required>
+        </div>
+        <div class="form-group">
+            <label>დაადასტურე პაროლი</label>
+            <input type="password" name="confirm_password" minlength="6" required>
+        </div>
+        <div class="form-group">
+            <label>სახელი</label>
+            <input type="text" name="first_name" value="{{ first_name }}" required>
+        </div>
+        <div class="form-group">
+            <label>გვარი</label>
+            <input type="text" name="last_name" value="{{ last_name }}" required>
+        </div>
+        <div class="form-group">
+            <label>ტელეფონი</label>
+            <input type="tel" name="telephone" value="{{ telephone }}" required>
+        </div>
+        {% if message %}
+        <div class="error-message">
+            <label>{{ message }}</label>
+        </div>
+        {% endif %}        
+        <button type="submit">რეგისტრაცია</button>
+        <div class="link">
+            უკვე გაქვს ანგარიში? <a href="/auth/login">შესვლა</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

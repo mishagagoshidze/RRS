@@ -1,0 +1,44 @@
+<section id="rooms" class="content-section hidden">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-slate-800">აუდიტორიები</h2>
+        {% if user.super_admin %}
+        <button onclick="Room_Add()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-indigo-700 transition">
+            ოთახის დამატება
+        </button>
+        {% endif %}
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for room in rooms %}
+            <div class="bg-white p-6 rounded-xl shadow-sm border flex justify-between items-center group hover:shadow-md transition-all">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <p class="text-indigo-600 font-bold text-lg">N{{ room.number }}</p>
+                        <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded">სართული: {{ room.floor }}</span>
+                    </div>                                
+                    <div class="mt-1 flex items-center text-sm text-slate-700 font-medium">
+                        <i class="fas fa-user-tie mr-2 text-slate-400"></i>
+                        {% if room.admin_first_name %}
+                            {{ room.admin_first_name }} {{ room.admin_last_name }}
+                        {% else %}
+                            <span class="text-slate-400 italic font-normal">ადმინისტრატორი არ არის</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-sm text-gray-600 italic mt-1">{{ room.description }}</p>                           
+                </div>
+                <div class="flex flex-col items-center space-y-1">
+                    {% if user.super_admin %}
+                    <button onclick="Room_Edit('{{ room.id }}', '{{ room.number }}', '{{ room.floor }}', '{{ room.description }}', '{{ room.admin_id }}' )" 
+                            class="text-slate-400 hover:text-indigo-600 transition p-1">
+                        <i class="fas fa-edit text-xl"></i>
+                    </button>
+                    <a href="/room/delete/{{ room.id }}" 
+                        class="text-slate-400 hover:text-red-600 transition p-1"
+                        onclick="return confirm('ნამდვილად აუდიტორიის გსურთ წაშლა?')">
+                        <i class="fas fa-trash-alt text-xl"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section> 
