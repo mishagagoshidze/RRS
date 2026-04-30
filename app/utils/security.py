@@ -3,6 +3,9 @@ from datetime import datetime, timedelta, timezone
 #from passlib.context import CryptContext
 from jose import jwt, JWTError
 from typing import Optional
+from sqlalchemy.orm import Session
+
+from app.db.models import Users
 
 # ==============================
 # Password hashing setup
@@ -68,3 +71,24 @@ def create_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     )
 
     return encoded_jwt
+
+
+def decode_token(token: str) -> Optional[dict]:
+    """Decode a JWT token and return its payload."""
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        return None
+
+
+def get_current_user(token: str, db: Session) -> Optional[Users]:
+    """Return the current authenticated user from a JWT token."""
+    payload = decode_token(token)
+    if not payload:
+        return None
+
+    email = payload.get("sub")
+    if not email:
+        return None
+
+    return db.query(Users).filter(Users.email == email).first()

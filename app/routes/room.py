@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, Depends, HTTPException, Form
+from fastapi import APIRouter, Depends, HTTPException, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db.models import Rooms, RoomAdmin
+from app.utils.security import get_current_user
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
@@ -16,8 +17,24 @@ router = APIRouter(prefix="/room", tags=["room"])
 #router = APIRouter(tags=["room"])
 
 
+def require_super_admin(request: Request, db: Session):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    current_user = get_current_user(token, db)
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    if not current_user.super_admin:
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    return current_user
+
+
 @router.post("/save")
 async def save_room(
+    request: Request,
     id: int = Form(None),
     number: str = Form(...),
     floor: int = Form(...),
@@ -25,6 +42,7 @@ async def save_room(
     user_id: int = Form(None),
     db: Session = Depends(get_db)
 ):
+    require_super_admin(request, db)
     if id:
         db_room = db.query(Rooms).filter(Rooms.id == id).first()
         if not db_room:
@@ -60,9 +78,11 @@ async def save_room(
 
 @router.get("/delete/{room_id}")
 async def room_delete(
-    room_id: int, 
+    room_id: int,
+    request: Request,
     db: Session = Depends(get_db)
 ):
+    require_super_admin(request, db)
     db.query(RoomAdmin).filter(RoomAdmin.id_room == room_id).delete(synchronize_session=False)
 
     room = db.query(Rooms).filter(Rooms.id == room_id).first()
