@@ -134,6 +134,7 @@ function Room_Edit(id, number, floor, description, admin_id) {
 
 // <--- RESERVATION
 
+
 function Event_Create() {
     
     const form = document.getElementById('form-main-event');
@@ -143,23 +144,28 @@ function Event_Create() {
 
 }
 
-function Event_Create2(room_id, user_id, start_date, end_date, description) { 
+function Event_Edit(btn) {
     
-    document.getElementById('form-event-room-id').value = room_id;
-    
-    document.getElementById('form-event-user-id').value = user_id;
-    
-    document.getElementById('form-event_start_date').value = start_date;
-    
-    document.getElementById('form-event_end_date').value = start_date;
+    const id = btn.getAttribute('data-id');
+    const roomId = btn.getAttribute('data-room');
+    const userId = btn.getAttribute('data-user');
+    const start = btn.getAttribute('data-start');
+    const end = btn.getAttribute('data-end');
+    const desc = btn.getAttribute('data-desc');
 
-    document.getElementById('form-event_end_date').value = start_date;
+    // ფორმის ველების შევსება
+    document.getElementById('form-event-id').value = id;
+    document.getElementById('form-event-room-id').value = roomId;
+    document.getElementById('form-event-user-id').value = userId;
+    // დარწმუნდით, რომ თქვენს ფორმაში ID-ები ემთხვევა ამათ
+    document.getElementById('form-event-start-date').value = start;
+    document.getElementById('form-event-end-date').value = end;
+    document.getElementById('form-event-description').value = desc;
 
-     document.getElementById('form-event-description').value = description;
-
+    // სათაურის შეცვლა
+    document.getElementById('form-event-title').innerText = "ჯავშნის რედაქტირება";
     
+    // ფორმის გამოჩენა
     showSection('form-event');
-
 }
-
 // RESERVATION --->

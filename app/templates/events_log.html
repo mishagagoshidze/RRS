@@ -1,0 +1,50 @@
+{% include "header.html" %}
+
+    <div class="w-full">
+        
+        <div class="bg-white border-b border-slate-200 p-6 mb-6 shadow-sm">
+            <h2 class="text-3xl font-extrabold text-slate-800 tracking-tight">
+                <i class="fas fa-clock text-indigo-500 mr-3"></i>უნივერსიტეტის აუდიტორიების მიმდინარე განრიგი
+            </h2>
+        </div>
+
+        <div class="flex flex-col w-full px-4 md:px-6 gap-4">
+            {% for event in events %}                
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 relative overflow-hidden flex items-center w-full gap-8 transition-all hover:bg-slate-50">                
+                <div class="absolute left-0 top-0 bottom-0 w-3 bg-emerald-500"></div>
+                <div class="flex-shrink-0">
+                    <div class="flex flex-col items-center justify-center bg-slate-900 text-white w-28 h-20 rounded-xl shadow-lg">
+                        <span class="text-3xl font-black">N{{ event.room_number }}</span>
+                    </div>
+                </div>
+                <div class="flex-grow">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-1">
+                        {{ event.description }}
+                    </h3>                       
+                </div>
+                <div class="flex items-center gap-10 pr-4 border-l-2 border-slate-100 pl-10">
+                    <div class="text-center">
+                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">დაწყება</p>
+                        <p class="text-2xl font-black text-slate-800">{{ event.start_date.strftime('%H:%M') }}</p>
+                        <p class="text-sm font-bold text-indigo-600">{{ event.start_date.strftime('%d %b') }}</p>
+                    </div>                
+                    <i class="fas fa-chevron-right text-slate-200 text-2xl"></i>
+                    <div class="text-center">
+                        <p class="text-xs text-slate-400 font-bold uppercase mb-1">დასრულება</p>
+                        <p class="text-2xl font-black text-slate-800">{{ event.end_date.strftime('%H:%M') }}</p>
+                        <p class="text-sm font-bold text-indigo-600">{{ event.end_date.strftime('%d %b') }}</p>
+                    </div>
+                </div>
+            </div>                
+            {% endfor %}
+        </div>
+        
+        {% if not events %}
+        <div class="mx-6 mt-10 text-center py-24 bg-white rounded-3xl border-4 border-dashed border-slate-200">
+            <i class="fas fa-calendar-times text-slate-200 text-8xl mb-6"></i>
+            <p class="text-slate-400 text-2xl font-bold">ამჟამად აქტიური ჯავშნები არ მოიძებნა</p>
+        </div>
+        {% endif %}
+    </div>
+
+{% include "footer.html" %}

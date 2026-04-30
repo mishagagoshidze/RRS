@@ -40,6 +40,7 @@ class Event(Base):
     start_date = Column(DateTime)
     end_date = Column(DateTime)
     description = Column(Text)
+    confirmation = Column(Boolean, default=False)
 
 class UsersTokens(Base):
     __tablename__ = "users_tokens"

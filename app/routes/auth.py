@@ -26,8 +26,10 @@ def login_page(
 ):
     return templates.TemplateResponse(
         request = request, 
-        name="auth/login.html", 
-        context={}
+        name = "auth/login.html", 
+        context = {
+            "title": "ავტორიზაცია"
+        }
     )
 
 @router.post("/login")
@@ -46,8 +48,9 @@ def login(
         return templates.TemplateResponse(
             request = request, 
             name = "auth/login.html", 
-            context={
-                "request": request, 
+            context = {
+                "request": request,
+                "title": "ავტორიზაცია", 
                 "message": "მომხმარებელი ან პაროლი არასწორია"
             }
         )
@@ -56,8 +59,9 @@ def login(
         return templates.TemplateResponse(
             request = request, 
             name = "auth/login.html", 
-            context={
+            context = {
                 "request": request, 
+                "title": "ავტორიზაცია",
                 "message": "მომხმარებელი არ არის გააქტიურებელი. შეამოწმეთ მეილი"
             }
         )
@@ -102,12 +106,13 @@ async def register(
         return templates.TemplateResponse(
             request = request, 
             name = "auth/register.html", 
-            context={
+            context = {
                 "request": request,
                 'email': email,
                 'first_name': first_name,
                 'last_name': last_name,
                 'telephone': telephone,
+                "title": "რეგისტრაცია",
                 "message": "პაროლები არ ემთხვევა"
             }
         )
@@ -125,6 +130,7 @@ async def register(
                 'first_name': first_name,
                 'last_name': last_name,
                 'telephone': telephone,
+                "title": "რეგისტრაცია",
                 "message": "მომხმარებელი ამ მეილით უკვე არსებობს"
             }
         )
@@ -167,6 +173,7 @@ async def register(
         name = "auth/login.html", 
         context={
             "request": request,
+            "title": "ავტორიზაცია",
             "message": "რეგისტრაცია წარმატებულია! შეამოწმეთ ელ.ფოსტა."
         }
     )
@@ -186,6 +193,7 @@ async def activate_user_page(
             request = request, 
             name = "auth/error.html", # შექმენით შეცდომის გვერდი
             context = {
+                "title": "",
                 "message": "ტოკენი არასწორია ან ვადაგასულია"
             }
         )
@@ -197,7 +205,8 @@ async def activate_user_page(
             request = request, 
             name = "auth/error.html", 
             context = {
-                "request": request, 
+                "request": request,
+                "title": "", 
                 "message": "მომხმარებელის მეილი არასწორია"
             }
         )
@@ -212,7 +221,8 @@ async def activate_user_page(
         name = "auth/login.html",
         context = {
             "request": request, 
-            "token": token
+            "token": token,
+            "title": "ავტორიზაცია",
         }
     )
 
@@ -225,7 +235,8 @@ def forgot_password_page(
         request = request, 
         name = "auth/forgot_password.html", 
         context = {
-            "request": request
+            "request": request,
+            "title": "პაროლის აღდგენა",
         }
     )
 
@@ -247,7 +258,8 @@ async def process_forgot_password(
             request = request, 
             name = "auth/forgot_password.html", 
             context = {
-                "request": request, 
+                "request": request,
+                "title": "პაროლის აღდგენა", 
                 "message": "მომხმარებელის მეილი არასწორია"
             }
         )
@@ -275,8 +287,10 @@ async def process_forgot_password(
 
     return templates.TemplateResponse(
         request = request, 
-        name="auth/login.html", 
-        context={}
+        name = "auth/login.html", 
+        context = {
+            "title": "ავტორიზაცია"
+        }
     )
 
 
@@ -292,8 +306,9 @@ def reset_password_page(
     if not token_entry or token_entry.expires_at < datetime.utcnow():
         return templates.TemplateResponse(
             request = request, 
-            name = "auth/error.html", # შექმენით შეცდომის გვერდი
+            name = "auth/error.html",
             context = {
+                "title": "",
                 "message": "ტოკენი არასწორია ან ვადაგასულია"
             }
         )
@@ -320,11 +335,12 @@ async def reset_password(
     if new_password != confirm_password:
        if new_password != confirm_password:
            return templates.TemplateResponse(
-            request=request,
-            name="auth/reset_password.html",
-            context={
+            request = request,
+            name = "auth/reset_password.html",
+            context = {
                 "request": request,
                 "token": token,
+                "title": "პაროლის აღდგენა",
                 "message": "პაროლები არ ემთხვევა ერთმანეთს"
             }
         )
@@ -338,6 +354,7 @@ async def reset_password(
             context = {
                 "request": request,
                 "token": token,
+                "title": "პაროლის აღდგენა",
                 "message": "არასწორი ან ვადაგასული ტოკენი"
             }
         )
@@ -350,6 +367,7 @@ async def reset_password(
             context = {
                 "request": request,
                 "token": token,
+                "title": "პაროლის აღდგენა",
                 "message": "მომხმარებელი ვერ მოიძებნა"
             }
         )
@@ -362,5 +380,7 @@ async def reset_password(
     return templates.TemplateResponse(
         request = request, 
         name = "auth/login.html", 
-        context = {}
+        context = {
+            "title": "ავტორიზაცია"
+        }
     )

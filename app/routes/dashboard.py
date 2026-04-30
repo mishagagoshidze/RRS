@@ -61,11 +61,15 @@ async def dashboard(
                 Event.start_date,
                 Event.end_date,
                 Event.description,
+                Event.confirmation,
                 Users.first_name,
                 Users.last_name,
                 Rooms.number.label("room_number"),
+                RoomAdmin.id_user.label("admin_room")
             ).outerjoin(Rooms, Rooms.id == Event.id_room) \
             .outerjoin(Users, Users.id == Event.id_user) \
+            .outerjoin(RoomAdmin, RoomAdmin.id_room == Rooms.id) \
+            .order_by(Event.start_date.desc()) \
             .all()
 
         # მოვძებნოთ მიმდინარე მომხმარებელი მონაცემთა ბაზაში
@@ -80,7 +84,8 @@ async def dashboard(
                 "user": current_user,
                 "rooms": all_rooms,
                 "users": all_users,
-                "events": all_events 
+                "events": all_events,
+                "title": "RRS Dashboard" 
             }
         )
            
