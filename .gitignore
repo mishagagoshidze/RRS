@@ -3,3 +3,4 @@ __pycache__/
 ~$*
 RRS.db
 venv
+.gitignore
