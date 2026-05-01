@@ -4,7 +4,6 @@ import secrets
 from fastapi import APIRouter, Depends, Form, Request, BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi import BackgroundTasks
 
 from app.db.database import get_db
 from app.db.models import Users, PasswordResetTokens, UsersTokens
