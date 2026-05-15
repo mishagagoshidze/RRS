@@ -1,8 +1,9 @@
 import os
 
-from fastapi import APIRouter, Depends, Form, Request, BackgroundTasks
+from fastapi import APIRouter, Depends, Form, Request, BackgroundTasks, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse
 
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -58,6 +59,7 @@ async def dashboard(
 
 @router.post("/create")
 def create_reservation(
+    request: Request,
     background_tasks: BackgroundTasks,
     id: int = Form(None),
     room_id: int = Form(...),
@@ -67,6 +69,35 @@ def create_reservation(
     description: str = Form(...),
     db: Session = Depends(get_db)
 ):
+    
+    # 1. ელემენტარული ვალიდაცია: დასრულება უნდა იყოს დაწყებაზე გვიან
+    if start_date >= end_date:
+        return JSONResponse(
+            status_code = 400,
+            content = {
+                "detail": "დასრულების დრო უნდა იყოს დაწყებაზე გვიან!"
+                }
+        )
+        
+
+    # 2. გადაკვეთის შემოწმება
+    conflict = db.query(Event).filter(
+        Event.id != id,        
+        Event.id_room == room_id,
+        Event.start_date < end_date,
+        Event.end_date > start_date
+    ).first()
+
+    
+    if conflict:
+        return JSONResponse(
+            status_code = 400, 
+            content = {
+                "status": "error", 
+                "detail": "ეს დრო უკვე დაკავებულია!"
+            }
+        )
+    
 
     if id:
         db_event = db.query(Event).filter(Event.id == id).first()
@@ -92,7 +123,7 @@ def create_reservation(
         db.add(new_event)
 
     db.commit()
-
+    
     db_room = db.query(
         Rooms.id,
         Rooms.number,
@@ -121,9 +152,15 @@ def create_reservation(
     </pre>
     """
 
-    background_tasks.add_task(send_email, "RRS", db_room.email, html)
+    #background_tasks.add_task(send_email, "RRS", db_room.email, html)
 
-    return RedirectResponse(url="/dashboard", status_code=303)
+    #return RedirectResponse(url="/dashboard", status_code=303)
+    return JSONResponse(
+        status_code = 200,
+        content = {
+            "status": "success", 
+            "detail": "ჯავშანი წარმატებით შეიქმნა"}
+    )
 
 
 @router.get("/delete/{event_id}")

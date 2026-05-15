@@ -1,4 +1,3 @@
-
 function showSection(sectionId) {
     // 1. ვიპოვოთ ყველა სექცია, რომელსაც აქვს 'content-section' კლასი
     const sections = document.querySelectorAll('.content-section');
@@ -139,13 +138,26 @@ function Event_Create() {
     
     const form = document.getElementById('form-main-event');
     if(form) form.reset();
-    
+
+     // შეცდომის შეტყობინება გაასუფთავე
+    const messageDiv = document.getElementById('message');
+    if(messageDiv) {
+        messageDiv.classList.add('hidden');
+        messageDiv.innerText = '';
+    }
+        
     showSection('form-event');
 
 }
 
 function Event_Edit(btn) {
     
+    const messageDiv = document.getElementById('message');
+    if(messageDiv) {
+        messageDiv.classList.add('hidden');
+        messageDiv.innerText = '';
+    }
+
     const id = btn.getAttribute('data-id');
     const roomId = btn.getAttribute('data-room');
     const userId = btn.getAttribute('data-user');

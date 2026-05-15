@@ -54,6 +54,65 @@
             {% include 'form/user.html' %}            
         </main>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const eventForm = document.getElementById('form-main-event');
+        
+        if (eventForm) {
+            eventForm.addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                console.log("ფორმის გაგზავნა შეჩერდა წარმატებით!");
+                handleEventSubmit(this);
+            });
+        } else {
+            console.error("ფორმა 'form-main-event' ვერ მოიძებნა DOM-ში!");
+        }
+    });
+
+    async function handleEventSubmit(form) {
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('form-event-submit-btn');
+
+        // დავიზღვიოთ თავი, თუ ელემენტები არ არსებობს
+        if (!messageDiv || !submitBtn) {
+            console.error("Message div ან Submit ღილაკი ვერ მოიძებნა!");
+            return;
+        }
+
+        const formData = new FormData(form);
+        const originalBtnText = submitBtn.innerHTML;
+
+        messageDiv.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> მოწმდება...';
+
+        try {
+            const response = await fetch('/event/create', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                messageDiv.innerText = result.detail || "შეცდომა";
+                messageDiv.classList.remove('hidden');
+            } else {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            messageDiv.innerText = "სერვერთან კავშირი ვერ დამყარდა.";
+            messageDiv.classList.remove('hidden');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
+    }
+
+    </script>
+
     <script src="{{ url_for('static', path='/dashboard.js') }}"></script>
 
 {% include "footer.html" %}
