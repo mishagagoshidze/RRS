@@ -36,7 +36,8 @@
                         </span>
                         <select id="form-event-user-id" name="user_id" required
                             class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none bg-white text-slate-700">
-                            <option value="" disabled selected>ვინ ჯავშნის?</option>
+                            <!--- <option value="" disabled selected>ვინ ჯავშნის?</option> -->
+                            <option value="{{ user.id }}" selected>{{ user.first_name }} {{ user.last_name }}</option>
                             {% for u in users %}
                                 <option value="{{ u.id }}">{{ u.first_name }} {{ u.last_name }}</option>
                             {% endfor %}

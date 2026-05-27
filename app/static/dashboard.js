@@ -145,7 +145,7 @@ function Event_Create() {
         messageDiv.classList.add('hidden');
         messageDiv.innerText = '';
     }
-        
+
     showSection('form-event');
 
 }
