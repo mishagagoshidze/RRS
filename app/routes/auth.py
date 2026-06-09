@@ -158,7 +158,7 @@ async def register(
     db.add(users_entry)
     db.commit()
 
-    reset_link = f"http://127.0.0.1:8000/auth/activate-user?token={token}"
+    reset_link = f"http://192.168.0.6:8001/auth/activate-user?token={token}"
     
     html = f"""
     <p>მომხმარებლის გასააქტიურებლად დააჭირეთ ბმულს:</p>
@@ -274,7 +274,7 @@ async def process_forgot_password(
     db.add(reset_entry)
     db.commit()
 
-    reset_link = f"http://127.0.0.1:8000/auth/reset-password?token={token}"
+    reset_link = f"http://192.168.0.6:8001/auth/reset-password?token={token}"
     
     html = f"""
     <p>პაროლის აღსადგენად დააჭირეთ  ბმულს:</p>
