@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, Depends, Form, Request, BackgroundTasks, HTTPException
+from fastapi import APIRouter, Depends, Form, Request, BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
@@ -13,6 +13,7 @@ from app.db.models import Event, Users, Rooms, RoomAdmin
 
 from app.services.email_service import send_email
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
@@ -21,7 +22,7 @@ router = APIRouter(prefix="/event", tags=["event"])
 
 @router.get("/log", response_class=HTMLResponse)
 async def dashboard(
-    request: Request, 
+    request: Request,
     db: Session = Depends(get_db)
 ):
     current_time = datetime.now()
@@ -55,7 +56,45 @@ async def dashboard(
             "title": "ღონისძიებები" 
         }
     )
-           
+
+@router.get("/log/{number}", response_class=HTMLResponse)
+async def dashboard(
+    request: Request,
+    number: int,
+    db: Session = Depends(get_db)
+):
+    current_time = datetime.now()
+    
+    events = db.query(
+        Event.id,
+        Event.id_user,
+        Event.id_room,
+        Event.start_date,
+        Event.end_date,
+        Event.description,
+        Event.confirmation,
+        Users.first_name,
+        Users.last_name,
+        Rooms.number.label("room_number")
+    ).select_from(Event) \
+    .outerjoin(Rooms, Rooms.id == Event.id_room) \
+    .outerjoin(Users, Users.id == Event.id_user) \
+    .filter(Rooms.number == number) \
+    .filter(Event.start_date > current_time) \
+    .filter(Event.confirmation == True) \
+    .order_by(Event.start_date.asc()) \
+    .limit(10) \
+    .all()
+
+    return templates.TemplateResponse(
+        request = request,
+        name = "events_log.html",
+        context = {
+            "request": request,
+            "events": events,
+            "title": "ღონისძიებები" 
+        }
+    )  
 
 @router.post("/create")
 def create_reservation(
