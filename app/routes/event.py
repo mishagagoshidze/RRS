@@ -191,16 +191,17 @@ def create_reservation(
     </pre>
     """
 
-    #background_tasks.add_task(send_email, "RRS", db_room.email, html)
+    background_tasks.add_task(send_email, "RRS", db_room.email, html)
 
     #return RedirectResponse(url="/dashboard", status_code=303)
+    
     return JSONResponse(
         status_code = 200,
         content = {
             "status": "success", 
             "detail": "ჯავშანი წარმატებით შეიქმნა"}
     )
-
+    
 
 @router.get("/delete/{event_id}")
 async def room_delete(
