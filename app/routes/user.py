@@ -48,6 +48,7 @@ async def user_save(
         db_user.email = email
         db_user.first_name = first_name
         db_user.last_name = last_name
+        db_user.telephone = telephone
         db_user.is_active = is_active
         db_user.super_admin = super_admin
         if password:
