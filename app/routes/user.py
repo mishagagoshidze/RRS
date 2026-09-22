@@ -52,7 +52,7 @@ async def user_save(
         db_user.is_active = is_active
         db_user.super_admin = super_admin
         if password:
-             db_user.password = hash_password(password),
+             db_user.password = hash_password(password)
 
     else:
         new_user = Users(
